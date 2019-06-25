@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -92,7 +93,7 @@ var redisPool = &redis.Pool{
 	MaxIdle:     3,
 	IdleTimeout: 240 * time.Second,
 	// Dial or DialContext must be set. When both are set, DialContext takes precedence over Dial.
-	Dial: func() (redis.Conn, error) { return redis.Dial("tcp", "localhost:6379") },
+	Dial: func() (redis.Conn, error) { return redis.Dial("tcp", os.Getenv("REDIS_ADDR")) },
 }
 
 // writeLock attempts to grab a redis lock. The error returned is safe to ignore
