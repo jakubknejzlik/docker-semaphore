@@ -4,3 +4,25 @@ services:
     image: redis
     ports:
       - 6379:6379
+  app1:
+    image: jakubknejzlik/semaphore
+    links:
+      - redis
+    environment:
+      - REDIS_ADDR=redis:6379
+    entrypoint: []
+    command:
+      - /bin/sh
+      - -c
+      - 'app lock test secret1 && echo "app1 start" && sleep 10 && echo "app1 start" && app unlock test secret1'
+  app2:
+    image: jakubknejzlik/semaphore
+    links:
+      - redis
+    environment:
+      - REDIS_ADDR=redis:6379
+    entrypoint: []
+    command:
+      - /bin/sh
+      - -c
+      - 'app lock test secret2 && echo "app2 start" && sleep 10 && echo "app2 done" && app unlock test secret2'
