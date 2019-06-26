@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"time"
 
@@ -44,11 +45,11 @@ var lockCmd = cli.Command{
 				time.Sleep(time.Second * 5)
 				continue
 			}
-			// if err != nil {
-			// 	return cli.NewExitError(err, 1)
-			// }
+			if ok {
+				return nil
+			}
 		}
-		return err
+		return fmt.Errorf("reached timeout for lock %s", timeout)
 	},
 }
 var unlockCmd = cli.Command{
