@@ -42,6 +42,7 @@ var lockCmd = cli.Command{
 			err = _err
 
 			if !ok {
+				fmt.Printf("Waiting for lock %s", key)
 				time.Sleep(time.Second * 5)
 				continue
 			}
@@ -49,7 +50,7 @@ var lockCmd = cli.Command{
 				return nil
 			}
 		}
-		return fmt.Errorf("reached timeout for lock %s", timeout)
+		return cli.NewExitError(fmt.Errorf("reached timeout for lock %s", timeout), 1)
 	},
 }
 var unlockCmd = cli.Command{
