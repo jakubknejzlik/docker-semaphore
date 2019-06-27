@@ -38,7 +38,7 @@ var lockCmd = cli.Command{
 
 		retryCount := int(t.Seconds() / 5)
 		for i := 0; i < retryCount; i++ {
-			ok, _err := writeLock(key, secret, 1000*600)
+			ok, _err := writeLock(key, secret, 3600)
 			err = _err
 
 			if !ok {
