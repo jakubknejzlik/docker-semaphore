@@ -50,21 +50,33 @@ var lockCmd = cli.Command{
 				return nil
 			}
 		}
-		return cli.NewExitError(fmt.Errorf("reached timeout for lock %s", timeout), 1)
+		return cli.NewExitError(fmt.Errorf("reached timeout for lock %s (error %s)", timeout, err.Error()), 1)
 	},
 }
 var unlockCmd = cli.Command{
 	Name:      "unlock",
 	Usage:     "unlock semaphore for given key",
 	UsageText: "unlock [key]",
-	Action: func(ctx *cli.Context) error {
+	Action: func(ctx *cli.Context) (err error) {
 		key := ctx.Args().First()
 		secret := ctx.Args().Get(1)
 
-		if _, err := releaseLock(key, secret); err != nil {
-			return cli.NewExitError(err, 1)
+		retryCount := 5
+		for i := 0; i < retryCount; i++ {
+			ok, _err := releaseLock(key, secret)
+			err = _err
+
+			if !ok {
+				fmt.Printf("Retrying unlock %s", key)
+				time.Sleep(time.Second * 5)
+				continue
+			}
+			if ok {
+				return nil
+			}
+
 		}
-		return nil
+		return cli.NewExitError(fmt.Errorf("Unable to unlock: %s", err.Error()), 1)
 	},
 }
 
