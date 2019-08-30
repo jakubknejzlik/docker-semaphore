@@ -42,7 +42,7 @@ var lockCmd = cli.Command{
 			err = _err
 
 			if !ok {
-				fmt.Printf("Waiting for lock %s", key)
+				fmt.Printf("Waiting for lock %s\n", key)
 				time.Sleep(time.Second * 5)
 				continue
 			}
